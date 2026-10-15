@@ -1,0 +1,108 @@
+# ============================================================================
+# .htaccess — pro-zhaluzi.ru
+# Использовать ТОЛЬКО если сервер на Apache.
+# Если стоит nginx — берите nginx-redirects.conf
+# ============================================================================
+
+# ---------------------------------------------------------------------------
+# 1. Кодировка
+# ---------------------------------------------------------------------------
+AddDefaultCharset UTF-8
+
+# ---------------------------------------------------------------------------
+# 2. https  +  без www  (единый канонический хост)
+#    Сейчас работает корректно (один 301) — не ломайте
+# ---------------------------------------------------------------------------
+RewriteEngine On
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://pro-zhaluzi.ru/$1 [R=301,L]
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://pro-zhaluzi.ru%{REQUEST_URI} [L,R=301]
+
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# Убрать завершающий слэш у всех страниц кроме главной
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# ---------------------------------------------------------------------------
+# 3. Кодировка URL — чтобы кириллица в адресах не ломалась
+# ---------------------------------------------------------------------------
+RewriteCond %{THE_REQUEST} \s/+(.+)\s+HTTP
+RewriteRule ^ /%1 [R=404,L]
+
+# ---------------------------------------------------------------------------
+# 4. 301-редиректы переименованных страниц
+#    ВАЖНО: страница-назначение должна существовать, иначе будет 404
+# ---------------------------------------------------------------------------
+
+# ★ Консолидация дубля «рулонные шторы блэкаут»
+RewriteRule ^rulonnayz-shtora-blackout/?$ rulonnye-shtory-blekaut [R=301,L]
+
+# ★ Шаблонный слаг
+RewriteRule ^newpage/?$ zhaluzi-i-shtory-pod-zakaz [R=301,L]
+
+# ★ Английские слаги
+RewriteRule ^stocks/?$ aktsii [R=301,L]
+RewriteRule ^map/?$ karta-sayta [R=301,L]
+
+# ★ Нечитаемые слаги
+RewriteRule ^zhaluzi-shtory/?$ zhalyuzi-ili-shtory [R=301,L]
+RewriteRule ^gorhorizontalnyezhaluzidlyapomeshcheniy/?$ gorizontalnyye-zhalyuzi-dlya-pomeshcheniya [R=301,L]
+
+# ---------------------------------------------------------------------------
+# 5. Кеширование
+# ---------------------------------------------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault                        "access plus 1 month"
+    ExpiresByType text/html               "access plus 0 seconds"
+    ExpiresByType text/css                "access plus 1 month"
+    ExpiresByType application/javascript  "access plus 1 month"
+    ExpiresByType image/jpeg              "access plus 1 month"
+    ExpiresByType image/png               "access plus 1 month"
+    ExpiresByType image/webp              "access plus 1 month"
+    ExpiresByType image/avif              "access plus 1 month"
+    ExpiresByType image/svg+xml           "access plus 1 month"
+    ExpiresByType font/woff2              "access plus 1 year"
+    ExpiresByType font/woff               "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+    # HTML не кешировать надолго — иначе правки не подхватятся
+    <FilesMatch "\.(?i:html)$">
+        Header set Cache-Control "public, max-age=0, must-revalidate"
+    </FilesMatch>
+
+    # --- Заголовки безопасности (сейчас отсутствуют) ---
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# ---------------------------------------------------------------------------
+# 6. Сжатие
+# ---------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+    AddOutputFilterByType DEFLATE application/json application/xml application/rss+xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Brotli (если модуль mod_brotli установлен)
+# <IfModule mod_brotli.c>
+#     AddOutputFilterByType BROTLI_COMPRESS text/html text/css text/plain
+#     AddOutputFilterByType BROTLI_COMPRESS application/javascript application/json
+#     AddOutputFilterByType BROTLI_COMPRESS image/svg+xml
+# </IfModule>
+
+# ---------------------------------------------------------------------------
+# 7. 404
+# ---------------------------------------------------------------------------
+ErrorDocument 404 /404.html

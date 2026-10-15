@@ -1,0 +1,55 @@
+# ============================================================================
+# robots.txt — pro-zhaluzi.ru
+# Разместить в корне сайта: https://pro-zhaluzi.ru/robots.txt
+# ============================================================================
+# ИСПРАВЛЕНИЯ относительно текущей версии:
+#   1. Host — убран протокол (Яндекс требует host БЕЗ схемы)
+#   2. Добавлен CleanParam — UTM-метки больше не создают дубли
+#   3. Добавлены явные Disallow для служебных разделов
+#   4. Добавлен приоритет обхода Яндекса
+# ============================================================================
+
+# --- Основной робот (Google, Яндекс, Bing и все остальные) ---
+User-agent: *
+Host: pro-zhaluzi.ru
+
+# Удалить метки параметров из индексации (Яндекс)
+CleanParam: utm_source&utm_medium&utm_campaign&utm_term&utm_content&yclid&gclid&fbclid
+
+# Закрыть служебные и мусорные адреса
+Disallow: /api/
+Disallow: /admin/
+Disallow: /*?$
+Disallow: /*?&
+
+# --- Яндекс.Картинки: индексировать картинки, но не служебные страницы ---
+User-agent: YandexImages
+Host: pro-zhaluzi.ru
+Disallow: /api/
+Allow: /
+
+# --- Разрешить полный обход главной страницы без параметров ---
+User-agent: Yandex
+Host: pro-zhaluzi.ru
+CleanParam: utm_source&utm_medium&utm_campaign&utm_term&utm_content&yclid
+Disallow: /api/
+
+# --- Google: стандарт, ничего не закрываем ---
+User-agent: Googlebot
+Host: pro-zhaluzi.ru
+Disallow: /api/
+
+Sitemap: https://pro-zhaluzi.ru/sitemap.xml
+
+
+# ============================================================================
+# ПРИМЕЧАНИЯ
+# ============================================================================
+# 1. Host поддерживается только Яндексом. Google его игнорирует — ошибки нет.
+# 2. Проверка после публикации: https://pro-zhaluzi.ru/robots.txt
+#    и Яндекс.Вебмастер → «Инструменты → Проверка robots.txt».
+# 3. Обратите внимание: страницы /map, /gratitude, /personal,
+#    /politikakonfidencyalnosti закрыты через meta robots=noindex,
+#    а не через robots.txt. Это правильно — Disallow не удаляет из индекса,
+#    а только мешает краулеру увидеть noindex. Не переносите их в robots.txt.
+# ============================================================================

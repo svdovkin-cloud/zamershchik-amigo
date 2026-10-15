@@ -1,0 +1,20 @@
+{
+  "name": "zamershchik-amigo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Приложение для замерщиков: живой каталог и расчёт из Amigo Customizer, заявки уходят на почту компании",
+  "scripts": {
+    "start": "node server/index.js",
+    "pin": "node scripts/set-pin.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "check": "node scripts/selfcheck.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.13"
+  }
+}

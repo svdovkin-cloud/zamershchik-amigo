@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <meta name="theme-color" content="#162a44">
+  <meta name="description" content="Замеры: заявка с расчётом сразу на почту">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Замеры Amigo">
+  <title>Замеры Amigo</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar" id="topbar" hidden>
+    <button class="topbar__back" id="btn-back" type="button" aria-label="Назад">‹</button>
+    <div class="topbar__title" id="topbar-title">Замеры</div>
+    <div class="topbar__user" id="topbar-user"></div>
+  </header>
+
+  <main id="view" class="view"></main>
+
+  <nav class="tabbar" id="tabbar" hidden>
+    <button class="tabbar__btn" data-nav="systems" type="button">
+      <span class="tabbar__icon">▦</span><span class="tabbar__label">Каталог</span>
+    </button>
+    <button class="tabbar__btn" data-nav="cart" type="button">
+      <span class="tabbar__icon">🧾</span><span class="tabbar__label">Заявка</span>
+      <span class="tabbar__badge" id="cart-badge" hidden>0</span>
+    </button>
+    <button class="tabbar__btn" data-nav="history" type="button">
+      <span class="tabbar__icon">🕘</span><span class="tabbar__label">История</span>
+    </button>
+    <button class="tabbar__btn" data-nav="account" type="button">
+      <span class="tabbar__icon">👤</span><span class="tabbar__label">Профиль</span>
+    </button>
+  </nav>
+
+  <div class="toasts" id="toasts"></div>
+  <div class="modal" id="modal" hidden>
+    <div class="modal__box" id="modal-box"></div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+старый_url;новый_url;действие;код_редиректа;приоритет;комментарий
+https://pro-zhaluzi.ru/rulonnayz-shtora-blackout;https://pro-zhaluzi.ru/rulonnye-shtory-blekaut;консолидация;301;1;Дубль коммерческой страницы блэкаут + опечатка "rulonnayz" в URL. Оставить коммерческую страницу, статью перелить или удалить
+https://pro-zhaluzi.ru/newpage;https://pro-zhaluzi.ru/zhaluzi-i-shtory-pod-zakaz;переименование;301;1;Шаблонный слаг. Страница ценная (19 043 символа текста) - обязательно переименовать с редиректом
+https://pro-zhaluzi.ru/stocks;https://pro-zhaluzi.ru/aktsii;переименование;301;2;Английский слаг на русском сайте
+https://pro-zhaluzi.ru/map;https://pro-zhaluzi.ru/karta-sayta;переименование;301;3;Английский слаг. Страница noindex - редирект менее критичен, но из sitemap убрать обязательно
+https://pro-zhaluzi.ru/zhaluzi-shtory;https://pro-zhaluzi.ru/zhalyuzi-ili-shtory;переименование;301;2;Слог без разделителей нечитаем. title страницы уже "Жалюзи или шторы - что выбрать"
+https://pro-zhaluzi.ru/gorizontalnyezhaluzidlyapomeshcheniy;https://pro-zhaluzi.ru/gorizontalnyye-zhalyuzi-dlya-pomeshcheniya;переименование;301;2;Безграмотный слаг. Согласуется с уже существующим /gorizontalnyye-derevyannyye-zhalyuzi
+https://pro-zhaluzi.ru/vertikalnyezhaluzikupit;https://pro-zhaluzi.ru/vertikalnyye-zhalyuzi-kupit;переименование;301;2;Транслитерация zhaluzi->zhalyuzi для единообразия. Опционально - можно оставить как есть
+https://pro-zhaluzi.ru/rulonnyeshtorykupit;https://pro-zhaluzi.ru/rulonnye-shtory-kupit;переименование;301;3;Та же транслитерация. Опционально
+https://pro-zhaluzi.ru/shtoryplissekupit;https://pro-zhaluzi.ru/shtory-plisse-kupit;переименование;301;3;Та же транслитерация. Опционально
+https://pro-zhaluzi.ru/automaticheskiezhaluzikupit;https://pro-zhaluzi.ru/avtomaticheskie-zhalyuzi;переименование;301;3;Та же транслитерация. Опционально
+https://pro-zhaluzi.ru/gorizontalnyezhaluzikupit;https://pro-zhaluzi.ru/gorizontalnyye-zhalyuzi-kupit;переименование;301;3;Та же транслитерация. Опционально
+https://pro-zhaluzi.ru/consent.html;https://pro-zhaluzi.ru/personal;консолидация;301;2;Старая страница согласия. В sitemap не входит, но отдаёт 200 с пустым title. Заменить все ссылки на /personal
+https://pro-zhaluzi.ru/regulation.html;https://pro-zhaluzi.ru/privacy;консолидация;301;2;Старое положение. Ссылки в подвале ведут сюда - заменить на /privacy

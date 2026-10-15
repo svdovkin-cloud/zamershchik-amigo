@@ -1,0 +1,197 @@
+<!--
+  WebPage + Review JSON-LD — служебные страницы
+  ============================================================================
+  На этих страницах разметки нет вообще. Ниже — готовые блоки.
+  Вставлять в блок «HTML-код» на соответствующей странице.
+  ============================================================================
+-->
+
+
+<!-- ==========================================================================
+     /contact — ContactPage + LocalBusiness (вытягивает карточку организации
+     в Яндекс.Бизнес и Google Business Profile, показывает телефон и часы)
+     ========================================================================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "@id": "https://pro-zhaluzi.ru/contact#webpage",
+  "url": "https://pro-zhaluzi.ru/contact",
+  "name": "Контакты PRO Жалюзи в Самаре — адрес и телефон",
+  "description": "Адрес, телефон, e-mail и режим работы производства жалюзи и штор PRO Жалюзи в Самаре.",
+  "inLanguage": "ru-RU",
+  "isPartOf": { "@id": "https://pro-zhaluzi.ru/#website" },
+  "primaryImageOfPage": {
+    "@type": "ImageObject",
+    "url": "https://pro-zhaluzi.ru/og-image.jpg"
+  },
+  "about": { "@id": "https://pro-zhaluzi.ru/#organization" },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Главная", "item": "https://pro-zhaluzi.ru/" },
+      { "@type": "ListItem", "position": 2, "name": "Контакты", "item": "https://pro-zhaluzi.ru/contact" }
+    ]
+  }
+}
+</script>
+
+
+<!-- ==========================================================================
+     /reviews — страница отзывов
+     ⚠ AggregateRating включать ТОЛЬКО если на странице реально видны
+       отзывы с оценками. Google проверяет соответствие видимому контенту.
+       Если отзывы есть, а оценок нет — добавьте оценки из вашей CRM/сервиса.
+     ========================================================================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://pro-zhaluzi.ru/reviews#webpage",
+  "url": "https://pro-zhaluzi.ru/reviews",
+  "name": "Отзывы о PRO Жалюзи — отзывы клиентов из Самары",
+  "inLanguage": "ru-RU",
+  "isPartOf": { "@id": "https://pro-zhaluzi.ru/#website" },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Главная", "item": "https://pro-zhaluzi.ru/" },
+      { "@type": "ListItem", "position": 2, "name": "Отзывы", "item": "https://pro-zhaluzi.ru/reviews" }
+    ]
+  }
+}
+</script>
+
+<!--
+  ⭐ РАЗБЛОКИРОВАТЬ, КОГДА ПОЯВЯТСЯ РЕАЛЬНЫЕ ОЦЕНКИ:
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "PRO Жалюзи",
+  "url": "https://pro-zhaluzi.ru/",
+  "telephone": "+7-846-277-01-14",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "ул. Алма-Атинская, д. 155",
+    "addressLocality": "Самара",
+    "addressCountry": "RU"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "РЕАЛЬНОЕ_ЗНАЧЕНИЕ",
+    "reviewCount": "РЕАЛЬНОЕ_КОЛИЧЕСТВО"
+  }
+}
+</script>
+-->
+
+
+<!-- ==========================================================================
+     /about-us — AboutPage
+     ========================================================================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "@id": "https://pro-zhaluzi.ru/about-us#webpage",
+  "url": "https://pro-zhaluzi.ru/about-us",
+  "name": "О компании PRO Жалюзи — производитель с 1995 года",
+  "inLanguage": "ru-RU",
+  "isPartOf": { "@id": "https://pro-zhaluzi.ru/#website" },
+  "mainEntity": { "@id": "https://pro-zhaluzi.ru/#organization" }
+}
+</script>
+
+
+<!-- ==========================================================================
+     /articles и /katalog-shtor — CollectionPage / ItemList
+     Помогает Яндексу понять структуру каталога
+     ========================================================================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://pro-zhaluzi.ru/katalog-shtor#webpage",
+  "url": "https://pro-zhaluzi.ru/katalog-shtor",
+  "name": "Каталог штор – рулонные, римские шторы и жалюзи в Самаре",
+  "inLanguage": "ru-RU",
+  "isPartOf": { "@id": "https://pro-zhaluzi.ru/#website" },
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": 14,
+    "itemListOrder": "https://schema.org/ItemListOrderDescending",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1,  "url": "https://pro-zhaluzi.ru/gorizontalnyezhaluzikupit" },
+      { "@type": "ListItem", "position": 2,  "url": "https://pro-zhaluzi.ru/gorizontalnyye-derevyannyye-zhalyuzi" },
+      { "@type": "ListItem", "position": 3,  "url": "https://pro-zhaluzi.ru/gorizontalnyye-bambukovyye-zhalyuzi" },
+      { "@type": "ListItem", "position": 4,  "url": "https://pro-zhaluzi.ru/vertikalnyezhaluzikupit" },
+      { "@type": "ListItem", "position": 5,  "url": "https://pro-zhaluzi.ru/zhalyuzi-vertikalnye-tkanevye" },
+      { "@type": "ListItem", "position": 6,  "url": "https://pro-zhaluzi.ru/rachelcurtains" },
+      { "@type": "ListItem", "position": 7,  "url": "https://pro-zhaluzi.ru/rulonnyeshtorykupit" },
+      { "@type": "ListItem", "position": 8,  "url": "https://pro-zhaluzi.ru/rulonnye-shtory-blekaut" },
+      { "@type": "ListItem", "position": 9,  "url": "https://pro-zhaluzi.ru/rulonnye-shtory-dennoch" },
+      { "@type": "ListItem", "position": 10, "url": "https://pro-zhaluzi.ru/kassetnye-rulonnye-shtory" },
+      { "@type": "ListItem", "position": 11, "url": "https://pro-zhaluzi.ru/zip" },
+      { "@type": "ListItem", "position": 12, "url": "https://pro-zhaluzi.ru/rimskieshtorykurit" },
+      { "@type": "ListItem", "position": 13, "url": "https://pro-zhaluzi.ru/shtoryplissekupit" },
+      { "@type": "ListItem", "position": 14, "url": "https://pro-zhaluzi.ru/automaticheskiezhaluzikupit" }
+    ]
+  }
+}
+</script>
+
+
+<!-- ==========================================================================
+     /dostavka-i-oplata — FAQPage (добавить только если там есть реальные Q&A)
+     Проверено: сейчас это обычная текстовая страница без вопросов.
+     Если переделаете её в формат вопрос-ответ — вставьте сюда разметку.
+     ========================================================================== -->
+
+
+<!-- ==========================================================================
+     ГАРАНТИЙНЫЕ УСЛОВИЯ — шаблон новой страницы, которую обещает FAQ
+     Создать https://pro-zhaluzi.ru/garantijnye-usloviya
+     ========================================================================== -->
+<!--
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Какая гарантия на жалюзи в Самаре?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "На все изделия и монтажные работы PRO Жалюзи даёт гарантию 1 год. Гарантия покрывает дефекты изготовления и монтажа и распространяется на горизонтальные, вертикальные, кассетные, деревянные и бамбуковые жалюзи, а также на рулонные, римские шторы и шторы плиссе."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Что входит в гарантийное обслуживание?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "В рамках гарантийного срока мы бесплатно устраняем неисправности и дефекты, возникшие по нашей вине: ненадлежащий монтаж, заводской брак изделия, отклонение от заказанных размеров."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Что не покрывается гарантией?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Гарантия не распространяется на механические повреждения изделия, нарушение правил ухода и эксплуатации, самостоятельную переустановку, а также на естественный износ механизма управления при интенсивной эксплуатации."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Как обратиться по гарантии?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Позвоните по телефону +7 (846) 277-01-14 или напишите на zakaz@pro-zhaluzi.ru, приложив номер заказа и фотографию дефекта. Мастер приедет и устранит неисправность бесплатно."
+      }
+    }
+  ]
+}
+</script>
+-->

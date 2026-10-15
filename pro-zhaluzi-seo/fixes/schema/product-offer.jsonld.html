@@ -1,0 +1,151 @@
+<!--
+  Product / Offer JSON-LD — шаблон для продуктовых страниц
+  ============================================================================
+  ВАЖНО: на 29 из 41 страницы сейчас НЕТ цен (нет символа ₽).
+  Пока цена не выведена в видимый текст, разметку Offer НЕ включать —
+  Google трактует структурированные данные, не совпадающие с видимым
+  контентом, как спам и может выдать ручное действие.
+
+  ПОРЯДОК:
+    1) Добавить на страницу видимый блок с ценой (см. price-blocks.md)
+    2) Только потом вставить этот JSON-LD
+    3) Подставить реальные значения
+
+  ⚠ Перед публикацией заменить: ЦЕНА_ОТ, ССЫЛКА_НА_ФОТО, URL_СТРАНИЦЫ,
+     НАЗВАНИЕ, СРАЗМЕРЫ — все значения-плейсхолдеры!
+  ============================================================================
+-->
+
+
+<!-- ==========================================================================
+     ШАБЛОН 1. Горизонтальные алюминиевые жалюзи (страница без своего товара)
+     https://pro-zhaluzi.ru/gorizontalnyezhaluzikupit
+     ========================================================================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "@id": "https://pro-zhaluzi.ru/gorizontalnyezhaluzikupit#product",
+  "name": "Горизонтальные жалюзи в Самаре",
+  "description": "Горизонтальные алюминиевые жалюзи от производителя PRO Жалюзи в Самаре: более 50 цветов, замер, доставка, монтаж за 1 день, гарантия 1 год.",
+  "image": [
+    "ССЫЛКА_НА_ФОТО_1",
+    "ССЫЛКА_НА_ФОТО_2"
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "PRO Жалюзи"
+  },
+  "manufacturer": {
+    "@id": "https://pro-zhaluzi.ru/#organization"
+  },
+  "category": "Горизонтальные жалюзи",
+  "url": "https://pro-zhaluzi.ru/gorizontalnyezhaluzikupit",
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "RUB",
+    "lowPrice": "1950",
+    "highPrice": "7500",
+    "offerCount": "50",
+    "availability": "https://schema.org/InStock",
+    "url": "https://pro-zhaluzi.ru/gorizontalnyezhaluzikupit",
+    "seller": {
+      "@id": "https://pro-zhaluzi.ru/#organization"
+    }
+  }
+}
+</script>
+
+
+<!-- ==========================================================================
+     ШАБЛОН 2. Конкретная модель с одной ценой и характеристиками
+     ========================================================================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "@id": "https://pro-zhaluzi.ru/rulonnyeshtorykupit#product",
+  "name": "Рулонные шторы",
+  "description": "Рулонные шторы от производителя PRO Жалюзи в Самаре. Бесплатный замер, установка за 1 день, гарантия 1 год.",
+  "image": ["ССЫЛКА_НА_ФОТО"],
+  "brand":    { "@type": "Brand", "name": "PRO Жалюзи" },
+  "category": "Рулонные шторы",
+  "url": "https://pro-zhaluzi.ru/rulonnyeshtorykupit",
+  "color": "50+ цветов",
+  "material": "Алюминий, полиэстер, блэкаут-ткань",
+  "offers": {
+    "@type": "Offer",
+    "price": "1950",
+    "priceCurrency": "RUB",
+    "unitText": "м²",
+    "availability": "https://schema.org/InStock",
+    "priceValidUntil": "2027-12-31",
+    "url": "https://pro-zhaluzi.ru/rulonnyeshtorykupit",
+    "deliveryLeadTime": {
+      "@type": "QuantitativeValue",
+      "minValue": 3,
+      "maxValue": 14,
+      "unitCode": "DAY"
+    },
+    "seller": { "@id": "https://pro-zhaluzi.ru/#organization" }
+  }
+}
+</script>
+
+
+<!-- ==========================================================================
+     ШАБЛОН 3. Услуга (для страниц про замер/монтаж/доставку)
+     ========================================================================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": "https://pro-zhaluzi.ru/#service-zamer",
+  "name": "Бесплатный замер и монтаж жалюзи в Самаре",
+  "description": "Бесплатный выезд мастера-замерщика по Самаре, установка жалюзи и штор за 1 день, гарантия 1 год.",
+  "serviceType": "Замер и монтаж жалюзи",
+  "provider": { "@id": "https://pro-zhaluzi.ru/#organization" },
+  "areaServed": { "@type": "City", "name": "Самара" },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "RUB",
+    "description": "Бесплатный замер",
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
+
+
+<!-- ==========================================================================
+     ШАБЛОН 4. AggregateRating — только если собрать РЕАЛЬНЫЕ отзывы
+     ⚠ Google требует чтобы rating отражал реальные отзывы, видимые на странице.
+       Выдумывать рейтинг нельзя — это нарушение политики Google и Яндекса,
+       ведёт к ручным санкциям.
+       Пока на /reviews нет структурированных отзывов с оценками — НЕ вставлять.
+     ========================================================================== -->
+<!--
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Рулонные шторы",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "127",
+    "bestRating": "5",
+    "worstRating": "1"
+  }
+}
+</script>
+-->
+
+
+<!-- ==========================================================================
+     КАК ПОДСТАВИТЬ URL ФОТО ВРУЧНУЮ:
+       1) Открыть страницу
+       2) ПКМ по картинке товара → «Копировать адрес изображения»
+       3) Вставить в "image"
+     УКАЗЫВАЙТЕ РЕАЛЬНЫЕ URL С САЙТА — внешние картинки не засчитываются.
+     ========================================================================== -->

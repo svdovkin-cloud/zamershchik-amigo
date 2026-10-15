@@ -1,0 +1,200 @@
+<!--
+  ШАБЛОН <head> ДЛЯ ВНУТРЕННИХ СТРАНИЦ
+  ============================================================================
+  Способ А (рекомендуемый): вставить ДИНАМИЧЕСКИЙ скрипт (блок «HTML-код»
+  в настройках страницы). Он сам подставит canonical, og:url и H1-строку
+  для любой страницы — не нужно править каждую вручную.
+  ============================================================================
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     СПОСОБ А — ДИНАМИЧЕСКИЙ (вставить один раз, работает на всех страницах)
+     ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  // 1. Канонический URL: всегда https, без слэша в конце (кроме главной), без query
+  var u = new URL(window.location.href);
+  u.protocol = 'https:';
+  u.host = 'pro-zhaluzi.ru';          // принудительно убираем www
+  u.search = '';                      // убираем ?utm_... и прочие метки
+  u.hash = '';
+  var path = u.pathname.replace(/\/+$/, '');
+  if (path === '') path = '/';
+  var canonical = 'https://pro-zhaluzi.ru' + path;
+
+  // 2. Canonical — с ПРЯМЫМИ кавычками
+  var oldCan = document.querySelector("link[rel='canonical']");
+  if (oldCan) oldCan.parentNode.removeChild(oldCan);
+  var can = document.createElement('link');
+  can.rel = 'canonical';
+  can.href = canonical;
+  document.head.appendChild(can);
+
+  // 3. og:url — абсолютный
+  var og = document.querySelector("meta[property='og:url']");
+  if (!og) {
+    og = document.createElement('meta');
+    og.setAttribute('property', 'og:url');
+    document.head.appendChild(og);
+  }
+  og.setAttribute('content', canonical);
+
+  // 4. lang на <html>
+  document.documentElement.setAttribute('lang', 'ru-RU');
+
+  // 5. viewport без ограничения масштаба
+  var vp = document.querySelector("meta[name='viewport']");
+  if (!vp) {
+    vp = document.createElement('meta');
+    vp.setAttribute('name', 'viewport');
+    document.head.appendChild(vp);
+  }
+  vp.setAttribute('content', 'width=device-width, initial-scale=1.0');
+
+  // 6. twitter:card — если нет
+  if (!document.querySelector("meta[name='twitter:card']")) {
+    var tw = document.createElement('meta');
+    tw.setAttribute('name', 'twitter:card');
+    tw.setAttribute('content', 'summary_large_image');
+    document.head.appendChild(tw);
+  }
+
+  // 7. Автоматические BreadcrumbList — на всех страницах кроме главной
+  var isHome = (path === '/');
+  if (!isHome && !document.querySelector("script[data-seo-breadcrumbs]")) {
+    var NAMES = {
+      'gorizontalnyezhaluzikupit':      'Горизонтальные жалюзи',
+      'gorizontalnyye-derevyannyye-zhalyuzi': 'Горизонтальные деревянные жалюзи',
+      'gorizontalnyye-bambukovyye-zhalyuzi':  'Горизонтальные бамбуковые жалюзи',
+      'gorizontalnyezhaluzidlyapomeshcheniy': 'Горизонтальные жалюзи для помещений',
+      'vertikalnyezhaluzikupit':       'Вертикальные жалюзи',
+      'zhalyuzi-vertikalnye-tkanevye': 'Вертикальные тканевые жалюзи',
+      'rachelcurtains':                'Тюлевые жалюзи Rachel',
+      'rulonnyeshtorykupit':           'Рулонные шторы',
+      'rulonnye-shtory-blekaut':       'Рулонные шторы блэкаут',
+      'rulonnayz-shtora-blackout':     'Рулонные шторы блэкаут',
+      'rulonnye-shtory-dennoch':       'Рулонные шторы день-ночь',
+      'kassetnye-rulonnye-shtory':     'Кассетные рулонные шторы',
+      'zip':                           'Уличные рулонные шторы ZIP',
+      'rimskieshtorykurit':            'Римские шторы',
+      'shtoryplissekupit':             'Шторы плиссе',
+      'automaticheskiezhaluzikupit':   'Автоматические жалюзи',
+      'zhaluzi-dlya-kychni':           'Жалюзи для кухни',
+      'zhalyuzi-dlya-ofisa':           'Жалюзи для офиса',
+      'zhalyuzi-dlya-shkoly':          'Жалюзи для школы',
+      'zhaluzi-shtory':                'Жалюзи или шторы',
+      'newpage':                       'Жалюзи и шторы под заказ',
+      'katalog-shtor':                 'Каталог штор',
+      'about-us':                      'О компании',
+      'diler':                         'Дилерам',
+      'stocks':                        'Акции',
+      'articles':                      'Статьи',
+      'faq':                           'Вопросы и ответы',
+      'reviews':                       'Отзывы',
+      'contact':                       'Контакты',
+      'dostavka-i-oplata':             'Доставка и оплата'
+    };
+    // Подкатегории, группируемые в хлебные крошки
+    var CATALOG = [
+      'gorizontalnyezhaluzikupit','gorizontalnyye-derevyannyye-zhalyuzi',
+      'gorizontalnyye-bambukovyye-zhalyuzi','gorizontalnyezhaluzidlyapomeshcheniy',
+      'vertikalnyezhaluzikupit','zhalyuzi-vertikalnye-tkanevye','rachelcurtains',
+      'rulonnyeshtorykupit','rulonnye-shtory-blekaut','rulonnayz-shtora-blackout',
+      'rulonnye-shtory-dennoch','kassetnye-rulonnye-shtory','zip',
+      'rimskieshtorykurit','shtoryplissekupit','automaticheskiezhaluzikupit',
+      'zhaluzi-dlya-kychni','zhalyuzi-dlya-ofisa','zhalyuzi-dlya-shkoly',
+      'zhaluzi-shtory','newpage'
+    ];
+
+    var items = [{
+      '@type': 'ListItem',
+      'position': 1,
+      'name': 'Главная',
+      'item': 'https://pro-zhaluzi.ru/'
+    }];
+    var pos = 2;
+
+    if (CATALOG.indexOf(path.slice(1)) !== -1) {
+      items.push({
+        '@type': 'ListItem', 'position': pos++, 'name': 'Каталог',
+        'item': 'https://pro-zhaluzi.ru/katalog-shtor'
+      });
+    }
+    items.push({
+      '@type': 'ListItem', 'position': pos, 'name': NAMES[path.slice(1)] || document.title,
+      'item': canonical
+    });
+
+    var ld = document.createElement('script');
+    ld.type = 'application/ld+json';
+    ld.setAttribute('data-seo-breadcrumbs', '1');
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      'itemListElement': items
+    });
+    document.head.appendChild(ld);
+  }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     СПОСОБ Б — СТАТИЧЕСКИЙ (если платформа позволяет задать теги отдельно)
+     Подставьте {URL} и {TITLE} под конкретную страницу
+     ═══════════════════════════════════════════════════════════════════════ -->
+
+<!-- <link rel="canonical" href="https://pro-zhaluzi.ru/{URL}"> -->
+<!-- <meta property="og:url" content="https://pro-zhaluzi.ru/{URL}"> -->
+<!-- <meta name="twitter:card" content="summary_large_image"> -->
+<!-- <meta property="og:image:alt" content="{TITLE} — PRO Жалюзи, Самара"> -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     ТАБЛИЦА: canonical для каждой страницы (41 шт.)
+     Формат: текущий URL  →  правильный canonical
+     ═══════════════════════════════════════════════════════════════════════ -->
+<!--
+https://pro-zhaluzi.ru/                                    →  https://pro-zhaluzi.ru/
+https://pro-zhaluzi.ru/about-us                            →  https://pro-zhaluzi.ru/about-us
+https://pro-zhaluzi.ru/articles                            →  https://pro-zhaluzi.ru/articles
+https://pro-zhaluzi.ru/automaticheskiezhaluzikupit         →  https://pro-zhaluzi.ru/automaticheskiezhaluzikupit
+https://pro-zhaluzi.ru/contact                             →  https://pro-zhaluzi.ru/contact
+https://pro-zhaluzi.ru/diler                               →  https://pro-zhaluzi.ru/diler
+https://pro-zhaluzi.ru/dostavka-i-oplata                   →  https://pro-zhaluzi.ru/dostavka-i-oplata
+https://pro-zhaluzi.ru/faq                                 →  https://pro-zhaluzi.ru/faq
+https://pro-zhaluzi.ru/gorizontalnyezhaluzidlyapomeshcheniy →  https://pro-zhaluzi.ru/gorizontalnyezhaluzidlyapomeshcheniy
+https://pro-zhaluzi.ru/gorizontalnyezhaluzikupit          →  https://pro-zhaluzi.ru/gorizontalnyezhaluzikupit
+https://pro-zhaluzi.ru/gorizontalnyye-bambukovyye-zhalyuzi →  https://pro-zhaluzi.ru/gorizontalnyye-bambukovyye-zhalyuzi
+https://pro-zhaluzi.ru/gorizontalnyye-derevyannyye-zhalyuzi→  https://pro-zhaluzi.ru/gorizontalnyye-derevyannyye-zhalyuzi
+https://pro-zhaluzi.ru/kaksdelatzamer                      →  https://pro-zhaluzi.ru/kaksdelatzamer
+https://pro-zhaluzi.ru/kakie-zhaluzi-dlya-shkoly            →  https://pro-zhaluzi.ru/kakie-zhaluzi-dlya-shkoly
+https://pro-zhaluzi.ru/kakuhagivatzazaluzi                 →  https://pro-zhaluzi.ru/kakuhagivatzazaluzi
+https://pro-zhaluzi.ru/kakvibratzhaluzi                    →  https://pro-zhaluzi.ru/kakvibratzhaluzi
+https://pro-zhaluzi.ru/kakzakazatrulonnyeshtory            →  https://pro-zhaluzi.ru/kakzakazatrulonnyeshtory
+https://pro-zhaluzi.ru/kassetnye-rulonnye-shtory           →  https://pro-zhaluzi.ru/kassetnye-rulonnye-shtory
+https://pro-zhaluzi.ru/katalog-shtor                       →  https://pro-zhaluzi.ru/katalog-shtor
+https://pro-zhaluzi.ru/rachelcurtains                       →  https://pro-zhaluzi.ru/rachelcurtains
+https://pro-zhaluzi.ru/reviews                             →  https://pro-zhaluzi.ru/reviews
+https://pro-zhaluzi.ru/rimskieshtorykurit                  →  https://pro-zhaluzi.ru/rimskieshtorykurit
+https://pro-zhaluzi.ru/rulonnayz-shtora-blackout            →  https://pro-zhaluzi.ru/rulonnye-shtory-blekaut   ★ консолидация
+https://pro-zhaluzi.ru/rulonnye-shtory-blekaut              →  https://pro-zhaluzi.ru/rulonnye-shtory-blekaut
+https://pro-zhaluzi.ru/rulonnye-shtory-dennoch              →  https://pro-zhaluzi.ru/rulonnye-shtory-dennoch
+https://pro-zhaluzi.ru/rulonnyeshtorykupit                 →  https://pro-zhaluzi.ru/rulonnyeshtorykupit
+https://pro-zhaluzi.ru/shtoryplissekupit                   →  https://pro-zhaluzi.ru/shtoryplissekupit
+https://pro-zhaluzi.ru/stocks                              →  https://pro-zhaluzi.ru/stocks
+https://pro-zhaluzi.ru/vertikalnyezhaluzikupit             →  https://pro-zhaluzi.ru/vertikalnyezhaluzikupit
+https://pro-zhaluzi.ru/zhaluzi-dlya-kychni                 →  https://pro-zhaluzi.ru/zhaluzi-dlya-kychni
+https://pro-zhaluzi.ru/zhaluzi-shtory                      →  https://pro-zhaluzi.ru/zhaluzi-shtory
+https://pro-zhaluzi.ru/zhalyuzi-dlya-ofisa                 →  https://pro-zhaluzi.ru/zhalyuzi-dlya-ofisa
+https://pro-zhaluzi.ru/zhalyuzi-dlya-shkoly                 →  https://pro-zhaluzi.ru/zhalyuzi-dlya-shkoly
+https://pro-zhaluzi.ru/zhalyuzi-vertikalnye-tkanevye       →  https://pro-zhaluzi.ru/zhalyuzi-vertikalnye-tkanevye
+https://pro-zhaluzi.ru/zip                                 →  https://pro-zhaluzi.ru/zip
+
+─── страницы с noindex (canonical всё равно нужен, self-canonical) ───
+https://pro-zhaluzi.ru/map                        →  https://pro-zhaluzi.ru/map          (noindex)
+https://pro-zhaluzi.ru/gratitude                  →  https://pro-zhaluzi.ru/gratitude    (noindex)
+https://pro-zhaluzi.ru/personal                   →  https://pro-zhaluzi.ru/personal     (noindex)
+https://pro-zhaluzi.ru/politikakonfidencyalnosti →  https://pro-zhaluzi.ru/politikakonfidencyalnosti (noindex)
+https://pro-zhaluzi.ru/privacy                    →  https://pro-zhaluzi.ru/privacy      (index)
+https://pro-zhaluzi.ru/newpage                    →  https://pro-zhaluzi.ru/zhaluzi-i-shtory-pod-zakaz  ★ после переименования
+-->

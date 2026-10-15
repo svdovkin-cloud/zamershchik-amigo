@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>Проверка синтаксиса</title></head>
+<body>
+  <h1>Проверка синтаксиса</h1>
+  <input type="file" id="files" multiple accept=".js,.mjs">
+  <pre id="out">Загрузите файлы…</pre>
+  <script>
+    window.RESULTS = null;
+
+    const out = document.getElementById('out');
+
+    // Обычный скрипт: парсим как Function, выполнения не происходит
+    function checkClassic(src) {
+      try {
+        // eslint-disable-next-line no-new-func
+        new Function(src);
+        return { ok: true, note: 'разобран как обычный скрипт' };
+      } catch (error) {
+        return { ok: false, note: error.name + ': ' + error.message };
+      }
+    }
+
+    // ES-модуль: импортируем blob. Синтаксическая ошибка всплывает сразу,
+    // а если модуль просто не может разрешить импорт — значит синтаксис в порядке
+    async function checkModule(src) {
+      const url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+      try {
+        await import(url);
+        return { ok: true, note: 'разобран и выполнен' };
+      } catch (error) {
+        const message = String(error && error.message);
+        const isSyntax = error instanceof SyntaxError || /SyntaxError|Unexpected|Invalid or unexpected/i.test(message);
+        if (!isSyntax) return { ok: true, note: 'синтаксис ок, не выполнен: ' + message.slice(0, 90) };
+        return { ok: false, note: error.name + ': ' + message };
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    document.getElementById('files').addEventListener('change', async (event) => {
+      const files = [...event.target.files];
+      const results = [];
+      for (const file of files) {
+        const src = await file.text();
+        // .js внутри пакета с "type": "module" тоже ES-модуль — определяем по содержимому
+        const looksLikeModule = /^\s*(import\s[\s\S]|import\{|import\(|export\s|export\{|export\*)/m.test(src);
+        const result = /\.mjs$/.test(file.name) || looksLikeModule ? await checkModule(src) : checkClassic(src);
+        results.push({ file: file.name, size: src.length, ...result });
+      }
+      window.RESULTS = results;
+      out.textContent = results
+        .map((r) => (r.ok ? 'OK   ' : 'FAIL ') + r.file + ' (' + r.size + ' байт) — ' + r.note)
+        .join('\n');
+    });
+  </script>
+</body>
+</html>

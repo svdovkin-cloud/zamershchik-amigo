@@ -1,0 +1,153 @@
+<!--
+  ИСПРАВЛЕННЫЙ <head> ДЛЯ ГЛАВНОЙ https://pro-zhaluzi.ru/
+  ============================================================================
+  Что исправлено (номера соответствуют отчёту 01-ОТЧЕТ-АУДИТА.md):
+    [1] canonical — прямые кавычки вместо “ ” (U+201D). БЫЛО: 0 рабочих canonical
+    [2] <html lang="ru-RU"> — добавляется в самом теге <html> (см. ниже)
+    [3] viewport — убран maximum-scale/user-scalable
+    [4] og:url — абсолютный URL с https:// и слэшем
+    [5] twitter:card, og:image:alt/width/height
+    [6] JSON-LD LocalBusiness + Organization + WebSite
+  ============================================================================
+  ВАЖНО: атрибут lang ставится НЕ здесь, а в открывающем теге:
+      <html lang="ru-RU">
+  ============================================================================
+-->
+
+<!-- ═════════════ [1] CANONICAL — ГЛАВНОЕ ИСПРАВЛЕНИЕ ═════════════ -->
+<!-- Использовать ТОЛЬКО прямые кавычки "  (U+0022), НЕ “ ” (U+201C/201D) -->
+<link rel="canonical" href="https://pro-zhaluzi.ru/">
+
+<!-- ═════════════ [3] VIEWPORT ═════════════ -->
+<!-- Убраны user-scalable=1.0 и maximum-scale=1.0 — они блокируют пинч-зум
+     и были причиной провала Lighthouse «meta-viewport» -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ═════════════ [4] OPEN GRAPH — og:url теперь абсолютный ═════════════ -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pro-zhaluzi.ru/">
+<meta property="og:site_name" content="PRO Жалюзи">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Жалюзи и шторы в Самаре от производителя — монтаж за 1 день">
+<meta property="og:description" content="Производим жалюзи и шторы в Самаре более 30 лет: вертикальные, горизонтальные, рулонные, римские, плиссе. Бесплатный замер.">
+
+<!-- [5] og:image — ЗАМЕНИТЕ url на актуальное изображение 1200×630px -->
+<meta property="og:image" content="https://pro-zhaluzi.ru/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Производство жалюзи и штор PRO Жалюзи в Самаре — горизонтальные, вертикальные жалюзи и рулонные шторы">
+
+<!-- [5] TWITTER / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Жалюзи и шторы в Самаре от производителя — монтаж за 1 день">
+<meta name="twitter:description" content="Производим жалюзи и шторы в Самаре более 30 лет. Бесплатный замер, монтаж за 1 день, гарантия 1 год.">
+<meta name="twitter:image" content="https://pro-zhaluzi.ru/og-image.jpg">
+<meta name="twitter:image:alt" content="Производство жалюзи и штор PRO Жалюзи в Самаре">
+
+<!-- ═════════════ [6] РАЗМЕТКА SCHEMA.ORG ═════════════ -->
+<!-- Подробные версии всех сущностей — в папке fixes/schema/ -->
+
+<!-- ── WebSite + поиск по сайту ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://pro-zhaluzi.ru/#website",
+  "url": "https://pro-zhaluzi.ru/",
+  "name": "PRO Жалюзи",
+  "inLanguage": "ru-RU",
+  "publisher": { "@id": "https://pro-zhaluzi.ru/#organization" },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://pro-zhaluzi.ru/poisk?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<!-- ── Organization / LocalBusiness ──
+     ⚠ TODO: указать postalCode и geo перед публикацией.
+        Данные взяты со страницы /contact, координаты нужно уточнить. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["HomeAndConstructionBusiness", "LocalBusiness"],
+  "@id": "https://pro-zhaluzi.ru/#organization",
+  "name": "PRO Жалюзи",
+  "alternateName": "Про Жалюзи",
+  "description": "Производство жалюзи и штор в Самаре с 1995 года: горизонтальные, вертикальные, кассетные, деревянные и бамбуковые жалюзи, рулонные, римские шторы, шторы плиссе, ZIP-шторы. Бесплатный замер и монтаж за 1 день.",
+  "url": "https://pro-zhaluzi.ru/",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://pro-zhaluzi.ru/favicon.png"
+  },
+  "image": "https://pro-zhaluzi.ru/og-image.jpg",
+  "telephone": "+7-846-277-01-14",
+  "email": "zakaz@pro-zhaluzi.ru",
+  "foundingDate": "1995",
+  "taxID": "1176313110346",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "ул. Алма-Атинская, д. 155",
+    "addressLocality": "Самара",
+    "addressRegion": "Самарская область",
+    "addressCountry": "RU",
+    "postalCode": "ТОЧНО"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "ТОЧНО",
+    "longitude": "ТОЧНО"
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+      "opens": "09:00",
+      "closes": "18:00"
+    }
+  ],
+  "areaServed": {
+    "@type": "City",
+    "name": "Самара"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Каталог жалюзи и штор",
+    "itemListElement": [
+      { "@type": "OfferCatalog", "name": "Горизонтальные жалюзи", "url": "https://pro-zhaluzi.ru/gorizontalnyezhaluzikupit" },
+      { "@type": "OfferCatalog", "name": "Горизонтальные деревянные жалюзи", "url": "https://pro-zhaluzi.ru/gorizontalnyye-derevyannyye-zhalyuzi" },
+      { "@type": "OfferCatalog", "name": "Горизонтальные бамбуковые жалюзи", "url": "https://pro-zhaluzi.ru/gorizontalnyye-bambukovyye-zhalyuzi" },
+      { "@type": "OfferCatalog", "name": "Вертикальные жалюзи", "url": "https://pro-zhaluzi.ru/vertikalnyezhaluzikupit" },
+      { "@type": "OfferCatalog", "name": "Вертикальные тканевые жалюзи", "url": "https://pro-zhaluzi.ru/zhalyuzi-vertikalnye-tkanevye" },
+      { "@type": "OfferCatalog", "name": "Тюлевые жалюзи Rachel", "url": "https://pro-zhaluzi.ru/rachelcurtains" },
+      { "@type": "OfferCatalog", "name": "Рулонные шторы", "url": "https://pro-zhaluzi.ru/rulonnyeshtorykupit" },
+      { "@type": "OfferCatalog", "name": "Рулонные шторы блэкаут", "url": "https://pro-zhaluzi.ru/rulonnye-shtory-blekaut" },
+      { "@type": "OfferCatalog", "name": "Рулонные шторы день-ночь", "url": "https://pro-zhaluzi.ru/rulonnye-shtory-dennoch" },
+      { "@type": "OfferCatalog", "name": "Кассетные рулонные шторы", "url": "https://pro-zhaluzi.ru/kassetnye-rulonnye-shtory" },
+      { "@type": "OfferCatalog", "name": "Уличные рулонные шторы ZIP", "url": "https://pro-zhaluzi.ru/zip" },
+      { "@type": "OfferCatalog", "name": "Римские шторы", "url": "https://pro-zhaluzi.ru/rimskieshtorykurit" },
+      { "@type": "OfferCatalog", "name": "Шторы плиссе", "url": "https://pro-zhaluzi.ru/shtoryplissekupit" },
+      { "@type": "OfferCatalog", "name": "Автоматические (умные) жалюзи", "url": "https://pro-zhaluzi.ru/automaticheskiezhaluzikupit" }
+    ]
+  },
+  "sameAs": [
+    "https://vk.com/prozhaluzi63",
+    "https://t.me/svdovkin",
+    "https://rutube.ru/channel/24248470/",
+    "https://max.ru/u/f9LHodD0cOJiEOEk5-u-JFEch8M_gXziE7USxEKD1NX2IG6ndqV62MAiqns"
+  ]
+}
+</script>
+
+<!-- ═════════════ МЕТАДАННЫЕ (оставлены как есть — проверены, корректны) ═════════════ -->
+<title>Жалюзи и шторы в Самаре от производителя — монтаж за 1 день</title>
+<meta name="description" content="Производим жалюзи и шторы в Самаре более 30 лет: вертикальные, горизонтальные, рулонные, римские, плиссе. Бесплатный замер.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+<!-- [Примечание] <meta name="keywords"> УДАЛИТЬ — не учитывается Google/Yandex,
+     но расходует вес. Удалённая строка:
+     <meta name="keywords" content="Жалюзи, рулонные шторы, римские шторы, вертикальные жалюзи, горизонтальные жалюзи, шторы плиссе"/> -->

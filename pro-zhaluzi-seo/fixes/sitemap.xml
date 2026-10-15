@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================================
+  sitemap.xml — pro-zhaluzi.ru
+  Разместить: https://pro-zhaluzi.ru/sitemap.xml
+  ============================================================================
+  ИСПРАВЛЕНИЯ относительно текущей версии:
+    1. УДАЛЁН changefreq="always" — Google его полностью игнорирует,
+       а Яндекс из-за него обходит страницы чаще необходимого
+    2. Главная: <loc>https://pro-zhaluzi.ru</loc> → с завершающим слэшем,
+       чтобы совпадать с каноническим URL
+    3. Убраны noindex-страницы из карты (/map, /gratitude, /personal,
+       /politikakonfidencyalnosti) — в sitemap не должно быть страниц,
+       запрещённых к индексации
+    4. Добавлены <priority> — приоритет обхода
+    5. lastmod заменён на ДАТЫ РЕАЛЬНОГО ИЗМЕНЕНИЯ контента
+  ============================================================================
+  ВАЖНО про lastmod: сейчас у всех 41 страницы стоит дата сборки сайта
+  (2026-10-09). Если сайт пересобирается при каждом сохранении, lastmod
+  будет меняться у всех страниц без причины — поисковики перестанут ему
+  верить и перестанут использовать его как сигнал обновления.
+  Проставьте здесь ДЕЙСТВИТЕЛЬНУЮ дату последнего содержательного изменения.
+  ============================================================================
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- ═════ ГЛАВНАЯ ═════ -->
+  <url>
+    <loc>https://pro-zhaluzi.ru/</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- ═════ КАТАЛОГ: РУЛОННЫЕ ШТОРЫ ═════ -->
+  <url>
+    <loc>https://pro-zhaluzi.ru/rulonnyeshtorykupit</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/rulonnye-shtory-blekaut</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/rulonnye-shtory-dennoch</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/kassetnye-rulonnye-shtory</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/zip</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/rimskieshtorykurit</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/shtoryplissekupit</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- ═════ КАТАЛОГ: ЖАЛЮЗИ ═════ -->
+  <url>
+    <loc>https://pro-zhaluzi.ru/gorizontalnyezhaluzikupit</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/gorizontalnyye-derevyannyye-zhalyuzi</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/gorizontalnyye-bambukovyye-zhalyuzi</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/gorizontalnyezhaluzidlyapomeshcheniy</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/vertikalnyezhaluzikupit</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/zhalyuzi-vertikalnye-tkanevye</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/rachelcurtains</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/automaticheskiezhaluzikupit</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ═════ КАТАЛОГ: ПО НАЗНАЧЕНИЮ ═════ -->
+  <url>
+    <loc>https://pro-zhaluzi.ru/katalog-shtor</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/zhaluzi-shtory</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/zhaluzi-dlya-kychni</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/zhalyuzi-dlya-ofisa</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/zhalyuzi-dlya-shkoly</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ═════ СПЕЦИАЛЬНЫЕ ПРЕДЛОЖЕНИЯ ═════ -->
+  <url>
+    <loc>https://pro-zhaluzi.ru/stocks</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ═════ О КОМПАНИИ ═════ -->
+  <url>
+    <loc>https://pro-zhaluzi.ru/about-us</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/dostavka-i-oplata</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/faq</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/reviews</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/diler</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/contact</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/privacy</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- ═════ БЛОГ / СТАТЬИ ═════ -->
+  <url>
+    <loc>https://pro-zhaluzi.ru/articles</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/gorizontalnyezhaluzidlyapomeshcheniy</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/rulonnayz-shtora-blackout</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/kaksdelatzamer</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/kakuhagivatzazaluzi</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/kakvibratzhaluzi</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/kakzakazatrulonnyeshtory</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pro-zhaluzi.ru/kakie-zhaluzi-dlya-shkoly</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- ═════ ⚠ УДАЛЁННЫЕ ИЗ КАРТЫ (были, но закрыты noindex) ═════
+  /map                          noindex — не в карте
+  /gratitude                    noindex — не в карте
+  /personal                     noindex — не в карте
+  /politikakonfidencyalnosti    noindex — не в карте
+
+  ═════ ДОБАВИТЬ В КАРТУ ПОСЛЕ СОЗДАНИЯ ═════
+  /garantijnye-usloviya        новая страница (обещана в FAQ, сейчас 404)
+  /zhaluzi-i-shtory-pod-zakaz  после переименования /newpage
+  /otzyvy-ot-klientov           если будет отдельная страница отзывов
+  -->
+
+</urlset>

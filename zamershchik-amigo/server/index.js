@@ -37,12 +37,12 @@ function loginGuard(req, res, next) {
  * Список замерщиков для экрана входа. Открыт специально: без него человек
  * не знает, чей PIN вводить. Секретом остаётся сам PIN.
  */
-app.get('/api/login/users', (_req, res) => {
-  res.json({ users: auth.listUsersForLogin() });
+app.get('/api/login/users', async (_req, res) => {
+  res.json({ users: await auth.listUsersForLogin() });
 });
 
-app.post('/api/login', loginGuard, (req, res) => {
-  const result = auth.login(req.body?.pin, req.body?.userId);
+app.post('/api/login', loginGuard, async (req, res) => {
+  const result = await auth.login(req.body?.pin, req.body?.userId);
   const key = req.ip || 'unknown';
   if (!result) {
     const entry = attempts.get(key) || { count: 0, resetAt: Date.now() + WINDOW_MS };
@@ -69,20 +69,20 @@ app.post('/api/logout', requireUser, (req, res) => {
   res.json({ ok: true });
 });
 
-app.get('/api/me', requireUser, (req, res) => {
+app.get('/api/me', requireUser, async (req, res) => {
   res.json({
-    user: auth.profileById(req.user.id) ?? req.user,
+    user: (await auth.profileById(req.user.id)) ?? req.user,
     mailConfigured: isMailConfigured(),
     isAdmin: req.user.role === 'admin',
-    mailTo: settings.recipients(),
+    mailTo: await settings.recipients(),
   });
 });
 
 // ─── Профиль замерщика ────────────────────────────────────────────────────
 
-app.patch('/api/profile', requireUser, (req, res) => {
+app.patch('/api/profile', requireUser, async (req, res) => {
   try {
-    const user = auth.updateOwnProfile(req.user.id, {
+    const user = await auth.updateOwnProfile(req.user.id, {
       name: req.body?.name,
       email: req.body?.email,
     });
@@ -93,9 +93,9 @@ app.patch('/api/profile', requireUser, (req, res) => {
   }
 });
 
-app.post('/api/profile/pin', requireUser, (req, res) => {
+app.post('/api/profile/pin', requireUser, async (req, res) => {
   try {
-    const user = auth.changeOwnPin(req.user.id, {
+    const user = await auth.changeOwnPin(req.user.id, {
       currentPin: req.body?.currentPin,
       newPin: req.body?.newPin,
     });
@@ -192,18 +192,18 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-app.get('/api/admin/overview', requireUser, requireAdmin, (_req, res) => {
+app.get('/api/admin/overview', requireUser, requireAdmin, async (_req, res) => {
   res.json({
-    users: auth.listUsers(),
-    settings: settings.readSettings(),
+    users: await auth.listUsersAsync(),
+    settings: await settings.readSettingsAsync(),
     mailConfigured: isMailConfigured(),
-    mailTo: settings.recipients(),
+    mailTo: await settings.recipients(),
   });
 });
 
-app.post('/api/admin/users', requireUser, requireAdmin, (req, res) => {
+app.post('/api/admin/users', requireUser, requireAdmin, async (req, res) => {
   try {
-    const user = auth.addUser({
+    const user = await auth.addUser({
       name: req.body?.name,
       pin: req.body?.pin,
       email: req.body?.email,
@@ -216,9 +216,9 @@ app.post('/api/admin/users', requireUser, requireAdmin, (req, res) => {
 });
 
 /** Администратор правит замерщика: имя, почту, PIN, права. */
-app.patch('/api/admin/users/:id', requireUser, requireAdmin, (req, res) => {
+app.patch('/api/admin/users/:id', requireUser, requireAdmin, async (req, res) => {
   try {
-    const user = auth.updateUserById(req.params.id, {
+    const user = await auth.updateUserById(req.params.id, {
       name: req.body?.name,
       email: req.body?.email,
       pin: req.body?.pin,
@@ -230,39 +230,40 @@ app.patch('/api/admin/users/:id', requireUser, requireAdmin, (req, res) => {
   }
 });
 
-app.delete('/api/admin/users/:id', requireUser, requireAdmin, (req, res) => {
+app.delete('/api/admin/users/:id', requireUser, requireAdmin, async (req, res) => {
   if (req.params.id === req.user.id) {
     return res.status(400).json({ error: 'Нельзя удалить самого себя' });
   }
   // Последнего администратора тоже нельзя — иначе в приложение будет не войти
-  const admins = auth.listUsers().filter((u) => u.role === 'admin');
-  const target = auth.listUsers().find((u) => u.id === req.params.id);
+  const users = await auth.listUsersAsync();
+  const admins = users.filter((u) => u.role === 'admin');
+  const target = users.find((u) => u.id === req.params.id);
   if (target?.role === 'admin' && admins.length <= 1) {
     return res.status(400).json({ error: 'Нельзя удалить единственного администратора' });
   }
   try {
-    const name = auth.removeUserById(req.params.id);
+    const name = await auth.removeUserById(req.params.id);
     res.json({ ok: true, name });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
-app.put('/api/admin/settings', requireUser, requireAdmin, (req, res) => {
-  const result = settings.updateSettings({
+app.put('/api/admin/settings', requireUser, requireAdmin, async (req, res) => {
+  const result = await settings.updateSettings({
     mailTo: req.body?.mailTo,
     mailFrom: req.body?.mailFrom,
     subjectPrefix: req.body?.subjectPrefix,
   });
   if (result.errors) return res.status(400).json({ error: result.errors.join('. ') });
-  res.json({ settings: result.settings, mailTo: settings.recipients() });
+  res.json({ settings: result.settings, mailTo: await settings.recipients() });
 });
 
 /** Проверочное письмо: сразу видно, дошло ли и на тот ли адрес. */
 app.post('/api/admin/test-mail', requireUser, requireAdmin, async (req, res) => {
   try {
     await sendTestMail(req.body?.address);
-    res.json({ ok: true, to: settings.recipients() });
+    res.json({ ok: true, to: await settings.recipients() });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -496,10 +497,10 @@ app.post('/api/orders', requireUser, async (req, res) => {
   }
 
   const rawPhotos = normalizePhotos(body.photos);
-  const id = store.nextOrderNumber();
+  const id = await store.nextOrderNumber();
   const storedPhotos = rawPhotos.length ? photos.savePhotos(id, rawPhotos) : [];
   // Почта замерщика: в письме это Reply-To, чтобы менеджер отвечал ему сразу
-  const measurer = auth.profileById(req.user.id) ?? { name: req.user.name, email: '' };
+  const measurer = (await auth.profileById(req.user.id)) ?? { name: req.user.name, email: '' };
 
   const order = {
     id,
@@ -537,7 +538,7 @@ app.post('/api/orders', requireUser, async (req, res) => {
     mail: { status: isMailConfigured() ? 'sending' : 'not_configured' },
   };
 
-  store.saveOrder(order);
+  await store.appendOrder(order);
 
   const mailPayload = {
     ...order,
@@ -550,10 +551,10 @@ app.post('/api/orders', requireUser, async (req, res) => {
 
   try {
     await sendOrderMail(mailPayload);
-    store.updateOrder(id, { mail: { status: 'sent', sentAt: new Date().toISOString() } });
+    await store.updateOrder(id, { mail: { status: 'sent', sentAt: new Date().toISOString() } });
     res.status(201).json({ id, emailed: true, totals: order.totals, items: order.items.length });
   } catch (error) {
-    store.updateOrder(id, { mail: { status: 'failed', error: error.message } });
+    await store.updateOrder(id, { mail: { status: 'failed', error: error.message } });
     res.status(201).json({
       id,
       emailed: false,
@@ -563,15 +564,15 @@ app.post('/api/orders', requireUser, async (req, res) => {
   }
 });
 
-app.get('/api/orders', requireUser, (req, res) => {
+app.get('/api/orders', requireUser, async (req, res) => {
   const limit = Math.min(Number(req.query.limit) || 50, 200);
-  const all = store.readOrders().reverse();
+  const all = (await store.readOrders()).reverse();
   const visible = req.user.role === 'admin' ? all : all.filter((o) => o.measurer?.id === req.user.id);
   res.json({ items: visible.slice(0, limit) });
 });
 
-app.get('/api/orders/:id', requireUser, (req, res) => {
-  const order = store.findOrder(req.params.id);
+app.get('/api/orders/:id', requireUser, async (req, res) => {
+  const order = await store.findOrder(req.params.id);
   if (!order) return res.status(404).json({ error: 'Заявка не найдена' });
   if (req.user.role !== 'admin' && order.measurer?.id !== req.user.id) {
     return res.status(403).json({ error: 'Нет доступа' });
@@ -581,7 +582,7 @@ app.get('/api/orders/:id', requireUser, (req, res) => {
 
 /** Письмо не ушло (был интернет, ящик отвечал медленно) — пробуем ещё раз. */
 app.post('/api/orders/:id/resend', requireUser, async (req, res) => {
-  const order = store.findOrder(req.params.id);
+  const order = await store.findOrder(req.params.id);
   if (!order) return res.status(404).json({ error: 'Заявка не найдена' });
   if (req.user.role !== 'admin' && order.measurer?.id !== req.user.id) {
     return res.status(403).json({ error: 'Нет доступа' });
@@ -597,10 +598,10 @@ app.post('/api/orders/:id/resend', requireUser, async (req, res) => {
 
   try {
     await sendOrderMail(payload);
-    store.updateOrder(order.id, { mail: { status: 'sent', sentAt: new Date().toISOString() } });
+    await store.updateOrder(order.id, { mail: { status: 'sent', sentAt: new Date().toISOString() } });
     res.json({ ok: true });
   } catch (error) {
-    store.updateOrder(order.id, { mail: { status: 'failed', error: error.message } });
+    await store.updateOrder(order.id, { mail: { status: 'failed', error: error.message } });
     res.status(500).json({ error: error.message });
   }
 });
@@ -625,11 +626,11 @@ app.use((error, _req, res, _next) => {
 
 // ─── Запуск ───────────────────────────────────────────────────────────────
 
-auth.ensureBootstrapUser();
+auth.bootstrapUser();
 
 app.listen(config.port, config.host, async () => {
   const mail = await verifyMail();
-  const users = auth.listUsers();
+  const users = await auth.listUsersAsync();
 
   console.log('');
   console.log('  Замеры Amigo — приложение запущено');
@@ -638,7 +639,7 @@ app.listen(config.port, config.host, async () => {
   console.log(`  База знаний:      ${config.amigo.base}`);
   console.log(`  Замерщиков:       ${users.length ? users.map((u) => `${u.name} (${u.role})`).join(', ') : '—'}`);
   console.log(
-    `  Почта:            ${mail.ok ? `настроена, письма → ${settings.recipients().join(', ')}` : `НЕ настроена — ${mail.reason}`}`,
+    `  Почта:            ${mail.ok ? `настроена, письма → ${(await settings.recipients()).join(', ')}` : `НЕ настроена — ${mail.reason}`}`,
   );
   if (!config.publicUrl) {
     console.log('  Внимание:        не задан PUBLIC_URL — в письме не будет ссылки на заявку');

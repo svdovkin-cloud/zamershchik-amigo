@@ -1,0 +1,32 @@
+# Render Blueprint: деплой приложения «Замеры Amigo» одной кнопкой.
+# Откройте render.yaml в панели Render — сервис создастся автоматически.
+
+services:
+  - type: web
+    name: zamershchik-amigo
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_TO
+        sync: false
+      - key: AMIGO_LOGIN
+        sync: false
+      - key: AMIGO_PASS
+        sync: false

@@ -1,12 +1,9 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { config } from './config.js';
-
 // Настройки, которые меняет администратор из приложения.
-// Живут в data/settings.json и перекрывают значения из .env,
-// поэтому смену адреса почты не нужно делать через файл и перезапуск.
+// Раньше жили в data/settings.json, теперь за интерфейсом db.js:
+// локально — тот же файл, на Render — таблица settings в Supabase.
 
-const settingsFile = () => path.join(config.dataDir, 'settings.json');
+import { readSettings, writeSettings } from './db.js';
+import { config } from './config.js';
 
 function defaults() {
   return {
@@ -17,13 +14,9 @@ function defaults() {
   };
 }
 
-export function readSettings() {
-  try {
-    const stored = JSON.parse(fs.readFileSync(settingsFile(), 'utf8'));
-    return { ...defaults(), ...stored };
-  } catch {
-    return defaults();
-  }
+export async function readSettingsAsync() {
+  const stored = await readSettings();
+  return { ...defaults(), ...(stored || {}) };
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -67,27 +60,32 @@ function validate(patch) {
 }
 
 /** Сохраняет настройки. Возвращает { settings } либо { errors }. */
-export function updateSettings(patch) {
+export async function updateSettings(patch) {
   const { errors, clean } = validate(patch || {});
   if (errors.length) return { errors };
 
-  const current = readSettings();
+  const current = await readSettingsAsync();
   const next = { ...current, ...clean, updatedAt: new Date().toISOString() };
 
-  fs.mkdirSync(config.dataDir, { recursive: true });
-  fs.writeFileSync(settingsFile(), `${JSON.stringify(next, null, 2)}\n`, 'utf8');
+  await writeSettings(next);
   return { settings: next };
 }
 
 /** Куда физически уходит письмо. */
-export const recipients = () => {
-  const list = parseRecipients(readSettings().mailTo);
+export async function recipients() {
+  const list = parseRecipients((await readSettingsAsync()).mailTo);
   return list.length ? list : config.mail.to;
-};
+}
 
-export const mailFrom = () => readSettings().mailFrom || config.mail.from;
+export async function mailFrom() {
+  return (await readSettingsAsync()).mailFrom || config.mail.from;
+}
 
-export const subjectPrefix = () => readSettings().subjectPrefix || config.mail.subjectPrefix;
+export async function subjectPrefix() {
+  return (await readSettingsAsync()).subjectPrefix || config.mail.subjectPrefix;
+}
 
 /** Для проверки связи: настройки считаются настроенными, если есть получатель. */
-export const hasRecipients = () => recipients().length > 0;
+export async function hasRecipients() {
+  return (await recipients()).length > 0;
+}

@@ -1,25 +1,11 @@
+// Пользователи и вход по PIN. Раньше лежали в users.json, теперь за
+// интерфейсом db.js: локально — тот же файл, на Render — таблица users
+// в Supabase. Хэширование PIN вынесено в pin.js.
+
 import crypto from 'node:crypto';
-import fs from 'node:fs';
-import path from 'node:path';
 import { config } from './config.js';
-
-const usersFile = () => path.join(config.dataDir, 'users.json');
-
-function readUsers() {
-  const file = usersFile();
-  if (!fs.existsSync(file)) return [];
-  try {
-    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeUsers(users) {
-  fs.mkdirSync(config.dataDir, { recursive: true });
-  fs.writeFileSync(usersFile(), `${JSON.stringify(users, null, 2)}\n`, 'utf8');
-}
+import { hashPin, verifyPin } from './pin.js';
+import { listUsers, saveUser, deleteUser, ensureBootstrapUser } from './db.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -44,40 +30,30 @@ function cleanPin(value) {
   return pin;
 }
 
-function hashPin(pin, salt = crypto.randomBytes(16).toString('hex')) {
-  const hash = crypto.scryptSync(String(pin), salt, 32).toString('hex');
-  return { salt, hash };
-}
-
-function verifyPin(pin, salt, hash) {
-  const candidate = crypto.scryptSync(String(pin), salt, 32);
-  const known = Buffer.from(hash, 'hex');
-  if (candidate.length !== known.length) return false;
-  return crypto.timingSafeEqual(candidate, known);
-}
-
-export function listUsers() {
-  return readUsers().map(({ id, name, email, role, createdAt }) => ({ id, name, email: email ?? '', role, createdAt }));
+export async function listUsersAsync() {
+  const users = await listUsers();
+  return users.map(({ id, name, email, role, createdAt }) => ({ id, name, email: email ?? '', role, createdAt }));
 }
 
 /** Кто автор заявки — по нему в письме ставятся Reply-To и подпись. */
-export function profileById(id) {
-  const user = readUsers().find((u) => u.id === id);
+export async function profileById(id) {
+  const users = await listUsers();
+  const user = users.find((u) => u.id === id);
   if (!user) return null;
   return { id: user.id, name: user.name, email: user.email ?? '', role: user.role };
 }
 
-function replaceUser(id, patch) {
-  const users = readUsers();
+async function replaceUser(id, patch) {
+  const users = await listUsers();
   const index = users.findIndex((u) => u.id === id);
   if (index < 0) throw new Error('Замерщик не найден');
   users[index] = { ...users[index], ...patch };
-  writeUsers(users);
+  await saveUser(users[index]);
   return profileById(id);
 }
 
 /** Замерщик правит свой профиль. PIN здесь не меняется — для этого отдельный запрос. */
-export function updateOwnProfile(id, { name, email }) {
+export async function updateOwnProfile(id, { name, email }) {
   const patch = {};
   if (name !== undefined) patch.name = cleanName(name);
   if (email !== undefined) patch.email = cleanEmail(email);
@@ -86,8 +62,9 @@ export function updateOwnProfile(id, { name, email }) {
 }
 
 /** Смена своего PIN. Требует текущий — телефон может быть разблокирован. */
-export function changeOwnPin(id, { currentPin, newPin }) {
-  const user = readUsers().find((u) => u.id === id);
+export async function changeOwnPin(id, { currentPin, newPin }) {
+  const users = await listUsers();
+  const user = users.find((u) => u.id === id);
   if (!user) throw new Error('Замерщик не найден');
   if (!verifyPin(String(currentPin ?? '').trim(), user.salt, user.hash)) {
     throw new Error('Текущий PIN указан неверно');
@@ -100,8 +77,9 @@ export function changeOwnPin(id, { currentPin, newPin }) {
 }
 
 /** Администратор правит любого: имя, почту, PIN, роль. */
-export function updateUserById(id, { name, email, pin, role }) {
-  const current = readUsers().find((u) => u.id === id);
+export async function updateUserById(id, { name, email, pin, role }) {
+  const users = await listUsers();
+  const current = users.find((u) => u.id === id);
   if (!current) throw new Error('Замерщик не найден');
 
   const patch = {};
@@ -117,7 +95,7 @@ export function updateUserById(id, { name, email, pin, role }) {
   if (role !== undefined && role !== current.role) {
     if (!['admin', 'measurer'].includes(role)) throw new Error('Неизвестная роль');
     // Последнего администратора понижать нельзя — иначе в админку не попасть
-    const admins = readUsers().filter((u) => u.role === 'admin');
+    const admins = users.filter((u) => u.role === 'admin');
     if (current.role === 'admin' && role !== 'admin' && admins.length <= 1) {
       throw new Error('Нельзя убрать права у единственного администратора');
     }
@@ -128,10 +106,10 @@ export function updateUserById(id, { name, email, pin, role }) {
   return replaceUser(id, patch);
 }
 
-export function addUser({ name, pin, email, role = 'measurer' }) {
+export async function addUser({ name, pin, email, role = 'measurer' }) {
   const clean = { name: cleanName(name), pin: cleanPin(pin), email: cleanEmail(email ?? '') };
 
-  const users = readUsers();
+  const users = await listUsers();
   if (users.some((u) => u.name.toLowerCase() === clean.name.toLowerCase())) {
     throw new Error(`Пользователь «${clean.name}» уже есть`);
   }
@@ -145,55 +123,55 @@ export function addUser({ name, pin, email, role = 'measurer' }) {
     hash,
     createdAt: new Date().toISOString(),
   };
-  users.push(user);
-  writeUsers(users);
+  await saveUser(user);
   return { id: user.id, name: user.name, email: user.email, role: user.role };
 }
 
-export function removeUser(name) {
-  const users = readUsers();
+export async function removeUser(name) {
+  const users = await listUsers();
   const left = users.filter((u) => u.name.toLowerCase() !== String(name || '').toLowerCase());
   if (left.length === users.length) throw new Error('Такого замерщика нет');
-  writeUsers(left);
+  await deleteUser(users.find((u) => u.name.toLowerCase() === String(name || '').toLowerCase()).id);
   return true;
 }
 
-export function removeUserById(id) {
-  const users = readUsers();
+export async function removeUserById(id) {
+  const users = await listUsers();
   const target = users.find((u) => u.id === id);
   if (!target) throw new Error('Замерщик не найден');
-  writeUsers(users.filter((u) => u.id !== id));
+  await deleteUser(id);
   return target.name;
 }
 
-export function countUsers() {
-  return readUsers().length;
+export async function countUsers() {
+  return (await listUsers()).length;
 }
 
 /** Первый запуск: создаём замерщика из .env, чтобы приложение не было «закрытым». */
-export function ensureBootstrapUser() {
-  if (readUsers().length > 0) return null;
-  const user = addUser({ name: config.bootstrapName, pin: config.bootstrapPin, role: 'admin' });
-  return user;
+export function bootstrapUser() {
+  return ensureBootstrapUser({ name: config.bootstrapName, pin: config.bootstrapPin, role: 'admin' });
 }
 
 /** Список для выбора при входе: без почты и без ничего лишнего. */
-export function listUsersForLogin() {
-  return readUsers().map(({ id, name, role }) => ({ id, name, role }));
+export async function listUsersForLogin() {
+  const users = await listUsers();
+  return users.map(({ id, name, role }) => ({ id, name, role }));
 }
 
-export function findUserById(id) {
-  const user = readUsers().find((u) => u.id === id);
+export async function findUserById(id) {
+  const users = await listUsers();
+  const user = users.find((u) => u.id === id);
   if (!user) return null;
   return { id: user.id, name: user.name, email: user.email ?? '', role: user.role };
 }
 
-function findUserByPin(pin) {
+async function findUserByPin(pin) {
   const clean = String(pin || '').trim();
   if (!/^\d{4,8}$/.test(clean)) return null;
   // PIN короткий — перебор идёт по всем, задержка тут не нужна,
   // реальная защита — это HTTPS и то, что снаружи сервер не светится наружу.
-  for (const user of readUsers()) {
+  const users = await listUsers();
+  for (const user of users) {
     if (verifyPin(clean, user.salt, user.hash)) {
       return { id: user.id, name: user.name, role: user.role };
     }
@@ -204,17 +182,18 @@ function findUserByPin(pin) {
 // ─── Токены входа ─────────────────────────────────────────────────────────
 const tokens = new Map(); // token -> { user, expiresAt }
 
-export function login(pin, userId) {
+export async function login(pin, userId) {
   // Если человек выбран — PIN проверяется только у него.
   // Так два замерщика с одинаковым кодом не путаются между собой.
   let user = null;
   if (userId) {
-    const chosen = readUsers().find((u) => u.id === userId);
+    const users = await listUsers();
+    const chosen = users.find((u) => u.id === userId);
     if (chosen && verifyPin(String(pin ?? '').trim(), chosen.salt, chosen.hash)) {
       user = { id: chosen.id, name: chosen.name, role: chosen.role };
     }
   } else {
-    user = findUserByPin(pin);
+    user = await findUserByPin(pin);
   }
 
   if (!user) return null;

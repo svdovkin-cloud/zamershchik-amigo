@@ -34,6 +34,14 @@ function loginGuard(req, res, next) {
 }
 
 /**
+ * Проверка живости сервиса. Render дёргает healthCheckPath и пускает трафик
+ * только когда он отвечает 200 — без этого маршрута сайт просто не открывается.
+ */
+app.get('/api/health', (_req, res) => {
+  res.json({ ok: true, database: store.isDatabase() ? 'supabase' : 'local' });
+});
+
+/**
  * Список замерщиков для экрана входа. Открыт специально: без него человек
  * не знает, чей PIN вводить. Секретом остаётся сам PIN.
  */
@@ -412,6 +420,8 @@ async function buildItems(rawItems) {
       mount,
       electric,
       install,
+      // Доплата за электропривод — попадает в итоги заявки и письмо
+      motorSurcharge: withMotor ? withMotor.surcharge : 0,
       warnings: calc.messages.filter((m) => m.type !== 'error').map((m) => m.text),
     });
   }
@@ -522,8 +532,11 @@ app.post('/api/orders', requireUser, async (req, res) => {
       totalPrice: round2(items.reduce((sum, item) => sum + item.totalPrice, 0)),
       // Монтаж вводится вручную и просто прибавляется к изделиям
       installTotal: round2(items.reduce((sum, item) => sum + (item.install || 0), 0)),
+      // Доплата за электропривод: Amigo её не считает, сумма задаётся в
+      // data/electric-kits.json и прибавляется к каждому изделию с приводом
+      motorTotal: round2(items.reduce((sum, item) => sum + (item.motorSurcharge || 0), 0)),
       grandTotal: round2(
-        items.reduce((sum, item) => sum + item.totalPrice + (item.install || 0), 0),
+        items.reduce((sum, item) => sum + item.totalPrice + (item.install || 0) + (item.motorSurcharge || 0), 0),
       ),
       quantity: items.reduce((sum, item) => sum + item.quantity, 0),
       area: round2(items.reduce((sum, item) => sum + item.area * item.quantity, 0)),
@@ -626,7 +639,9 @@ app.use((error, _req, res, _next) => {
 
 // ─── Запуск ───────────────────────────────────────────────────────────────
 
-auth.bootstrapUser();
+// Создаём первого замерщика при пустой базе. Если база недоступна — не роняем
+// приложение: оно продолжит работать на локальных файлах.
+auth.bootstrapUser().catch((error) => console.warn(`[start] Не удалось создать первого замерщика: ${error.message}`));
 
 app.listen(config.port, config.host, async () => {
   const mail = await verifyMail();

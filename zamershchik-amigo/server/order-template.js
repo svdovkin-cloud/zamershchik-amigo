@@ -212,9 +212,10 @@ const requisitesBlock = requisitesPhotos.length
 
     <tr><td style="padding:12px 20px;text-align:right;border-bottom:1px solid #e6eaee;">
       ${
-        order.totals.installTotal
+        order.totals.installTotal || order.totals.motorTotal
           ? `<div style="color:#5b6b7b;margin-bottom:6px;">Изделия: ${money(order.totals.totalPrice, order.currency || '₽')}</div>
-             <div style="color:#5b6b7b;margin-bottom:6px;">Монтаж: ${money(order.totals.installTotal, order.currency || '₽')}</div>`
+             <div style="color:#5b6b7b;margin-bottom:6px;">Монтаж: ${money(order.totals.installTotal, order.currency || '₽')}</div>
+             <div style="color:#5b6b7b;margin-bottom:6px;">Электрика: ${money(order.totals.motorTotal, order.currency || '₽')}</div>`
           : ''
       }
       <span style="color:#5b6b7b;margin-right:8px;">Итого:</span>
@@ -279,6 +280,7 @@ const requisitesBlock = requisitesPhotos.length
     '',
     `ИЗДЕЛИЯ: ${money(order.totals?.totalPrice, order.currency || '₽')}`,
     order.totals?.installTotal ? `МОНТАЖ: ${money(order.totals.installTotal, order.currency || '₽')}` : '',
+    order.totals?.motorTotal ? `ЭЛЕКТРИКА: ${money(order.totals.motorTotal, order.currency || '₽')}` : '',
     `ИТОГО: ${money(order.totals?.grandTotal ?? order.totals?.totalPrice, order.currency || '₽')}`,
     order.rate?.text ? `Курс: ${order.rate.text}` : '',
     order.note ? `\nКомментарий: ${order.note}` : '',

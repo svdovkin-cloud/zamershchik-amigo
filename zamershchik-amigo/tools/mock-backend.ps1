@@ -368,6 +368,7 @@ try {
               electric = [pscustomobject]@{ motor = [string]$_.electric.motor; kit = '' }
               install = [double]$_.install
               surcharge = $сурчарж
+              motorSurcharge = $сурчарж
             }
           })
           $entry = [pscustomobject]@{
@@ -383,7 +384,8 @@ try {
             totals = [pscustomobject]@{
               totalPrice = [Math]::Round((@($items | ForEach-Object { $_.totalPrice }) | Measure-Object -Sum).Sum, 2)
               installTotal = [Math]::Round((@($items | ForEach-Object { $_.install }) | Measure-Object -Sum).Sum, 2)
-              grandTotal = [Math]::Round((@($items | ForEach-Object { $_.totalPrice + $_.install + $_.surcharge }) | Measure-Object -Sum).Sum, 2)
+              motorTotal = [Math]::Round((@($items | ForEach-Object { $_.motorSurcharge }) | Measure-Object -Sum).Sum, 2)
+              grandTotal = [Math]::Round((@($items | ForEach-Object { $_.totalPrice + $_.install + $_.motorSurcharge }) | Measure-Object -Sum).Sum, 2)
               quantity = (@($items | ForEach-Object { $_.quantity }) | Measure-Object -Sum).Sum
               area = 1.8
             }

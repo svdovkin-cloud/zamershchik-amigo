@@ -3,7 +3,7 @@
 
 // Версию поднимаем при каждом изменении файлов: старый кэш иначе продолжит
 // отдавать прежний styles.css, и правка просто не дойдёт до телефона.
-const CACHE = 'zamershchik-v30';
+const CACHE = 'zamershchik-v31';
 const SHELL = [
   '/',
   '/index.html',
